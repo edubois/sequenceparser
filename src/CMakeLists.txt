@@ -50,37 +50,6 @@ if(SWIG_FOUND)
 	set(SEQUENCEPARSER_BINDING_FILE "sequenceParser.i")
 	set_source_files_properties(${SEQUENCEPARSER_BINDING_FILE} PROPERTIES CPLUSPLUS ON)
 
-	### PYTHON BINDING
-	find_package(PythonLibs)
-	if(PYTHONLIBS_FOUND)
-		include_directories(${PYTHON_INCLUDE_PATH})
-
-		# Swig flags
-		set(CMAKE_SWIG_FLAGS -c++ -fcompact)
-
-		# Create '_sequenceparser' shared lib (python)
-		swig_add_module(sequenceparser-py python ${SEQUENCEPARSER_BINDING_FILE})
-		# For Python binding, need to compile the wrapper into a lib called "_<module_name>.so"
-		set_target_properties(${SWIG_MODULE_sequenceparser-py_REAL_NAME} PROPERTIES OUTPUT_NAME _sequenceParser)
-		if(NOT APPLE AND NOT WIN32)
-			set_target_properties(${SWIG_MODULE_sequenceparser-py_REAL_NAME} PROPERTIES SOVERSION ${SEQUENCEPARSER_VERSION_MAJOR})
-			set_target_properties(${SWIG_MODULE_sequenceparser-py_REAL_NAME} PROPERTIES VERSION ${SEQUENCEPARSER_VERSION})
-		endif()
-		swig_link_libraries(sequenceparser-py sequenceparser-shared ${PYTHON_LIBRARIES})
-
-		# Install python interface
-		set(SEQUENCEPARSER_PYTHON_BINDING_FILE "${CMAKE_SWIG_OUTDIR}/sequenceParser.py")
-		set(SEQUENCEPARSER_PYTHON_MODULE_OUTPUT_DIR "lib/python${PYTHONLIBS_VERSION_STRING}/site-packages/pySequenceParser/")
-		install(
-			FILES ${SEQUENCEPARSER_PYTHON_BINDING_FILE} ${SEQUENCEPARSER_PYTHON_INIT_FILE}
-			DESTINATION ${SEQUENCEPARSER_PYTHON_MODULE_OUTPUT_DIR}
-		)
-		# Install __init__.py
-		install(CODE "file(WRITE ${CMAKE_INSTALL_PREFIX}/${SEQUENCEPARSER_PYTHON_MODULE_OUTPUT_DIR}/__init__.py)")
-	else()
-		message("PYTHON not found, will not build python binding.")
-	endif()
-
 	### JAVA BINDING
 	find_package(Java)
 	find_package(JNI)

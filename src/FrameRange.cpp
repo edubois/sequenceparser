@@ -40,6 +40,21 @@ std::ostream& operator<<(std::ostream& os, const std::vector<FrameRange>& frameR
 	return os;
 }
 
+std::ostream& operator<<(std::ostream& os, const std::vector<Time>& times)
+{
+	// to ensure that "ranges" size is > 0 as we use unsigned
+	if( times.empty() )
+		return os;
+	
+	std::vector<Time>::const_iterator it = times.begin();
+	for( std::size_t i = 0; i < times.size() - 1; ++i, ++it )
+	{
+		os << *it << ",";
+	}
+	os << *it;
+	return os;
+}
+
 std::ostream& operator<<(std::ostream& os, const FrameRangesView& frameRanges)
 {
 	os << frameRanges.getFrameRanges();
@@ -73,6 +88,10 @@ std::vector<FrameRange> extractFrameRanges( const std::vector<Time>& times )
 	for( ; it != itEnd; itPrev = it, ++it )
 	{
 		Time newStep = *it - *itPrev;
+		if( newStep == 0 )
+		{
+			std::cout << "newStep is 0." << std::endl;
+		}
 		FrameRange& prevRange = res.back();
 		if( prevRange.step == newStep )
 		{

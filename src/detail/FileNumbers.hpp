@@ -9,6 +9,8 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
+#include <iostream>
+
 #include <set>
 
 namespace sequenceParser {
@@ -44,15 +46,17 @@ public:
 		try
 		{
 			t = boost::lexical_cast<Time > ( s );
+			_numbers.push_back( Pair( t, s ) );
 		}
 		catch( ... )
 		{
+			// std::cout << ">>>>>>>>>> s: " << s << std::endl;
+			
 			// can't retrieve the number,
 			// the number inside the string is probably
 			// ouf of range for Time type.
 			t = 0;
 		}
-		_numbers.push_back( Pair( t, s ) );
 	}
 
 	void clear()
